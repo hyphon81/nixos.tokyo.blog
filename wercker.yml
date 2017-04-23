@@ -56,7 +56,7 @@ deploy:
         hostname: nixos.tokyo
 
     - add-ssh-key:
-        keyname: nixos_tokyo_blog_key_PRIVATE
+        keyname: nixos_tokyo_blog_key
 
     - script:
         name: rsync Hugo generated files
