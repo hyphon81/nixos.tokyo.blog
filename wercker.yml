@@ -61,4 +61,4 @@ deploy:
     - script:
         name: rsync Hugo generated files
         code: |
-              rsync -avzr --delete -e "ssh -i $PRIVATEKEY_PATH -o StrictHostKeyChecking=no -o UserKnownHostsFile=no -p 61449" ${WERCKER_SOURCE_DIR}/public/ hyphon81@nixos.tokyo:~/workspace/public/
+              rsync -avzr --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=no -p 61449" ${WERCKER_SOURCE_DIR}/public/ hyphon81@nixos.tokyo:~/workspace/public/
