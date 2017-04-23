@@ -1,0 +1,11 @@
+baseURL = "https://nixos.tokyo/blog/"
+languageCode = "ja"
+title = "nixos.tokyo blog"
+theme = "hugo_theme_robust"
+
+[params]
+  Author = "hyphon81"
+  disqusShortname = "nixos-tokyo"
+
+[outputs]
+page = [ "HTML", "AMP" ]
