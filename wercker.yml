@@ -1,0 +1,64 @@
+# This references a standard debian container from the
+# Docker Hub https://registry.hub.docker.com/_/debian/
+# Read more about containers on our dev center
+# http://devcenter.wercker.com/docs/containers/index.html
+box: debian
+# You can also use services such as databases. Read more on our dev center:
+# http://devcenter.wercker.com/docs/services/index.html
+# services:
+    # - postgres
+    # http://devcenter.wercker.com/docs/services/postgresql.html
+
+    # - mongo
+    # http://devcenter.wercker.com/docs/services/mongodb.html
+
+# This is the build pipeline. Pipelines are the core of wercker
+# Read more about pipelines on our dev center
+# http://devcenter.wercker.com/docs/pipelines/index.html
+build:
+    # Steps make up the actions in your pipeline
+    # Read more about steps on our dev center:
+    # http://devcenter.wercker.com/docs/steps/index.html
+  steps:
+    - script:
+      name: install git
+      code: |
+            apt-get update
+            apt-get install -y git
+    - script:
+      name: initialize git submodules
+      code: |
+            git submodule update --init --recursive
+    # Install hugo binary and run hugo
+    - arjen/hugo-build:
+        version: 0.14
+        flags: --buildDrafts=true
+    - script:
+        name: gzip html/xml/css/js
+        code: |
+          apt-get update
+          apt-get install -y gzip
+          find . -type f -name '*.html' -exec gzip --keep --best "{}" \;
+          find . -type f -name '*.xml' -exec gzip --keep --best "{}" \;
+          find . -type f -name '*.css' -exec gzip --keep --best "{}" \;
+          find . -type f -name '*.js' -exec gzip --keep --best "{}" \;
+
+deploy:
+  steps:
+    - script:
+      name: install ssh and rsync
+      code: |
+            apt-get update
+            apt-get install -y ssh
+            apt-get install -y rsync
+
+    - add-to-known_hosts:
+        hostname: nixos.tokyo
+
+    - add-ssh-key:
+        keyname: nixos_tokyo_blog_key_PRIVATE
+
+    - script:
+        name: rsync Hugo generated files
+        code: |
+              rsync -avzr --delete -e "ssh -i $PRIVATEKEY_PATH -o StrictHostKeyChecking=no -o UserKnownHostsFile=no -p 61449" ${WERCKER_SOURCE_DIR}/public/ hyphon81@nixos.tokyo:~/workspace/public/
