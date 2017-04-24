@@ -6,6 +6,7 @@ theme = "hugo_theme_robust"
 [params]
   Author = "hyphon81"
   disqusShortname = "nixos-tokyo"
+  googleAnalytics = "UA-57997520-5"
 
 [outputs]
 page = [ "HTML", "AMP" ]
